@@ -1,20 +1,19 @@
 const FEEDS = [
-  "https://www.rnz.co.nz/rss/national.xml",
+  "https://www.rnz.co.nz/rss",
   "https://www.stuff.co.nz/rss",
   "https://www.nzherald.co.nz/rss/",
   "https://www.1news.co.nz/rss/"
 ];
 
 async function fetchFeed(url) {
-  const endpoint =
-    "https://api.rss2json.com/v1/api.json?rss_url=" +
-    encodeURIComponent(url);
-
   try {
-    const res = await fetch(endpoint);
+    const res = await fetch(
+      "https://api.rss2json.com/v1/api.json?rss_url=" +
+      encodeURIComponent(url)
+    );
     const data = await res.json();
     return data.items || [];
-  } catch (e) {
+  } catch {
     return [];
   }
 }
@@ -29,12 +28,12 @@ async function fetchAll() {
       all.push({
         title: i.title,
         link: i.link,
-        text: (i.description || i.content || "").replace(/<[^>]*>/g, ""),
         source:
           url.includes("rnz") ? "RNZ" :
           url.includes("stuff") ? "Stuff" :
           url.includes("nzherald") ? "NZ Herald" :
-          "1News"
+          "1News",
+        text: (i.description || i.content || "").replace(/<[^>]*>/g, "")
       });
     }
   }
@@ -42,7 +41,7 @@ async function fetchAll() {
   return all;
 }
 
-/* simple clustering */
+/* clustering */
 function cluster(items) {
   const groups = [];
 
@@ -50,12 +49,8 @@ function cluster(items) {
     let placed = false;
 
     for (const g of groups) {
-      const a = item.title.toLowerCase().split(" ");
-      const b = g[0].title.toLowerCase();
-
-      const match = a.some(w => b.includes(w));
-
-      if (match) {
+      const words = item.title.toLowerCase().split(" ");
+      if (words.some(w => g[0].title.toLowerCase().includes(w))) {
         g.push(item);
         placed = true;
         break;
@@ -68,16 +63,15 @@ function cluster(items) {
   return groups;
 }
 
-/* lightweight sentiment */
+/* sentiment */
 function sentiment(text) {
   const t = text.toLowerCase();
+  let s = 0, o = 0, n = 1;
 
-  let support = 0, oppose = 0, neutral = 1;
+  if (t.includes("support") || t.includes("rise") || t.includes("growth")) s++;
+  if (t.includes("concern") || t.includes("critic") || t.includes("fall")) o++;
 
-  if (t.includes("increase") || t.includes("support") || t.includes("growth")) support++;
-  if (t.includes("critic") || t.includes("concern") || t.includes("fall")) oppose++;
-
-  return [support, oppose, neutral];
+  return [s, o, n];
 }
 
 /* render */
@@ -89,23 +83,33 @@ function render(groups) {
     const item = g[0];
     const s = sentiment(item.text);
 
-    const div = document.createElement("div");
-    div.className = "card";
+    const card = document.createElement("div");
+    card.className = "card";
 
-    div.innerHTML = `
-      <div class="title">${item.title}</div>
-      <div class="meta">${item.source}</div>
+    card.innerHTML = `
+      <div class="card-inner">
 
-      <div class="summary">${item.text.slice(0, 140)}...</div>
+        <div class="text">
+          <div class="title">${item.title}</div>
+          <div class="meta">${item.source}</div>
+          <div class="summary">${item.text.slice(0, 140)}</div>
+          <a href="${item.link}" target="_blank">Open</a>
+        </div>
 
-      <canvas id="c${i}" width="70" height="70"></canvas>
+        <div class="chart-box">
+          <canvas id="c${i}"></canvas>
+        </div>
 
-      <a href="${item.link}" target="_blank">Open source</a>
+      </div>
     `;
 
-    feed.appendChild(div);
+    feed.appendChild(card);
 
-    new Chart(document.getElementById(`c${i}`), {
+    const canvas = document.getElementById(`c${i}`);
+    canvas.width = 90;
+    canvas.height = 90;
+
+    new Chart(canvas, {
       type: "pie",
       data: {
         labels: ["Support", "Oppose", "Neutral"],
@@ -113,13 +117,15 @@ function render(groups) {
       },
       options: {
         responsive: false,
-        maintainAspectRatio: false
+        plugins: {
+          legend: { display: false }
+        }
       }
     });
 
     if (i % 3 === 2) {
       const ad = document.createElement("div");
-      ad.className = "card";
+      ad.className = "ad";
       ad.innerText = "Ad Space";
       feed.appendChild(ad);
     }
@@ -134,83 +140,3 @@ async function load() {
 
 load();
 setInterval(load, 10 * 60 * 1000);
-
-new Chart(document.getElementById(`c${i}`), {
-  type: "pie",
-  data: {
-    labels: ["Support", "Oppose", "Neutral"],
-    datasets: [{
-      data: s
-    }]
-  },
-  options: {
-    responsive: false,
-    plugins: {
-      legend: {
-        display: false
-      }
-    }
-  }
-});
-
-const canvas = document.getElementById(`c${i}`);
-canvas.width = 90;
-canvas.height = 90;
-
-new Chart(canvas, {
-  type: "pie",
-  data: {
-    labels: ["Support", "Oppose", "Neutral"],
-    datasets: [{ data: s }]
-  },
-  options: {
-    responsive: false,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false
-      }
-    },
-    layout: {
-      padding: 0
-    }
-  }
-});
-
-div.innerHTML = `
-  <div class="card-inner">
-
-    <div class="text">
-      <div class="title">${item.title}</div>
-      <div class="meta">${item.source}</div>
-
-      <div class="summary">${item.text.slice(0, 140)}</div>
-
-      <a href="${item.link}" target="_blank">Open</a>
-    </div>
-
-    <div class="chart-box">
-      <canvas id="c${i}"></canvas>
-    </div>
-
-  </div>
-`;
-
-const canvas = document.getElementById(`c${i}`);
-canvas.width = 90;
-canvas.height = 90;
-
-new Chart(canvas, {
-  type: "pie",
-  data: {
-    labels: ["Support", "Oppose", "Neutral"],
-    datasets: [{ data: s }]
-  },
-  options: {
-    responsive: false,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false }
-    }
-  }
-});

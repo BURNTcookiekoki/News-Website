@@ -16,20 +16,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-
-<div class="chart-wrap">
-  <canvas id="c${i}"></canvas>
-</div>
-
-div.innerHTML = `
-  <div class="title">${item.title}</div>
-  <div class="meta">${item.source}</div>
-
-  <div class="summary">${item.text.slice(0, 140)}</div>
-
-  <div class="chart-box">
-    <canvas id="c${i}"></canvas>
-  </div>
-
-  <a href="${item.link}" target="_blank">Open</a>
-`;

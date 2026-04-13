@@ -8,13 +8,13 @@ body {
 .topbar {
   position: sticky;
   top: 0;
-  background: #161a22;
   padding: 16px;
+  background: #161a22;
   border-bottom: 1px solid #222834;
 }
 
 #feed {
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
   padding: 20px;
 }
@@ -23,77 +23,37 @@ body {
   background: #161a22;
   border: 1px solid #222834;
   border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.title {
-  font-size: 22px;
-  margin-bottom: 8px;
-}
-
-.meta {
-  font-size: 13px;
-  color: #9aa4b2;
-  margin-bottom: 12px;
-}
-
-.majority {
-  font-weight: bold;
-  margin: 12px 0;
-}
-
-.sources {
-  margin-top: 16px;
-  font-size: 13px;
-  color: #9aa4b2;
-}
-
-.sources a {
-  color: #3b82f6;
-  text-decoration: none;
-}
-
-.sources a:hover {
-  text-decoration: underline;
-}
-
-.ad {
-  text-align: center;
-  padding: 20px;
-  border: 1px dashed #333;
-  margin: 20px 0;
-  color: #777;
-}
-
-.card {
+  padding: 12px;
+  margin-bottom: 14px;
   overflow: hidden;
-}
-
-.chart-box {
-  width: 90px;
-  height: 90px;
-  margin: 10px 0;
-  display: block;
-  position: relative;
-}
-
-.chart-box canvas {
-  width: 90px !important;
-  height: 90px !important;
-  display: block;
 }
 
 .card-inner {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   gap: 12px;
+  align-items: center;
 }
 
 .text {
   flex: 1;
   min-width: 0;
+}
+
+.title {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.meta {
+  font-size: 12px;
+  color: #9aa4b2;
+  margin-bottom: 6px;
+}
+
+.summary {
+  font-size: 13px;
+  color: #cfd6e0;
+  margin-bottom: 6px;
 }
 
 .chart-box {
@@ -105,5 +65,18 @@ body {
 .chart-box canvas {
   width: 90px !important;
   height: 90px !important;
-  display: block;
+}
+
+a {
+  color: #3b82f6;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.ad {
+  padding: 16px;
+  text-align: center;
+  border: 1px dashed #333;
+  margin: 12px 0;
+  color: #777;
 }
