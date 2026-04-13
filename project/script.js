@@ -1,5 +1,5 @@
 const FEEDS = [
-  "https://www.rnz.co.nz/rss",
+  "https://www.rnz.co.nz/rss/national.xml",
   "https://www.stuff.co.nz/rss",
   "https://www.nzherald.co.nz/rss/",
   "https://www.1news.co.nz/rss/"
