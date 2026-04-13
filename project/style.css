@@ -66,20 +66,19 @@ body {
   color: #777;
 }
 
-.chart-wrap {
-  width: 90px;
-  height: 90px;
-  margin: 10px 0;
+.card {
+  overflow: hidden;
 }
 
-.chart-wrap {
+.chart-box {
   width: 90px;
   height: 90px;
   margin: 10px 0;
+  display: block;
   position: relative;
 }
 
-.chart-wrap canvas {
+.chart-box canvas {
   width: 90px !important;
   height: 90px !important;
   display: block;

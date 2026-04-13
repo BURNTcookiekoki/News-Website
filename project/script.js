@@ -152,3 +152,27 @@ new Chart(document.getElementById(`c${i}`), {
     }
   }
 });
+
+const canvas = document.getElementById(`c${i}`);
+canvas.width = 90;
+canvas.height = 90;
+
+new Chart(canvas, {
+  type: "pie",
+  data: {
+    labels: ["Support", "Oppose", "Neutral"],
+    datasets: [{ data: s }]
+  },
+  options: {
+    responsive: false,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+    layout: {
+      padding: 0
+    }
+  }
+});
