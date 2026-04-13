@@ -1,18 +1,17 @@
-
 const FEEDS = [
   "https://www.rnz.co.nz/rss/national.xml",
-  "https://api.rss2json.com/v1/api.json?rss_url=https://www.stuff.co.nz/rss",
-  "https://api.rss2json.com/v1/api.json?rss_url=https://www.nzherald.co.nz/rss/",
-  "https://api.rss2json.com/v1/api.json?rss_url=https://www.1news.co.nz/rss/"
-  "https://www.westpac.co.nz/rednews/rss/"
-  
+  "https://www.stuff.co.nz/rss",
+  "https://www.nzherald.co.nz/rss/",
+  "https://www.1news.co.nz/rss/"
 ];
 
-/* ---------------- FETCH ---------------- */
+async function fetchFeed(url) {
+  const endpoint =
+    "https://api.rss2json.com/v1/api.json?rss_url=" +
+    encodeURIComponent(url);
 
-async function getFeed(url) {
   try {
-    const res = await fetch(url);
+    const res = await fetch(endpoint);
     const data = await res.json();
     return data.items || [];
   } catch (e) {
@@ -24,26 +23,26 @@ async function fetchAll() {
   let all = [];
 
   for (const url of FEEDS) {
-    const items = await getFeed(url);
+    const items = await fetchFeed(url);
 
-    items.forEach(i => {
+    for (const i of items) {
       all.push({
         title: i.title,
         link: i.link,
-        source: url.includes("rnz") ? "RNZ"
-              : url.includes("stuff") ? "Stuff"
-              : url.includes("nzherald") ? "NZ Herald"
-              : "1News",
-        text: (i.description || "").replace(/<[^>]*>/g, "")
+        text: (i.description || i.content || "").replace(/<[^>]*>/g, ""),
+        source:
+          url.includes("rnz") ? "RNZ" :
+          url.includes("stuff") ? "Stuff" :
+          url.includes("nzherald") ? "NZ Herald" :
+          "1News"
       });
-    });
+    }
   }
 
   return all;
 }
 
-/* ---------------- CLUSTER ---------------- */
-
+/* simple clustering */
 function cluster(items) {
   const groups = [];
 
@@ -51,12 +50,12 @@ function cluster(items) {
     let placed = false;
 
     for (const g of groups) {
-      const overlap = item.title
-        .toLowerCase()
-        .split(" ")
-        .some(w => g[0].title.toLowerCase().includes(w));
+      const a = item.title.toLowerCase().split(" ");
+      const b = g[0].title.toLowerCase();
 
-      if (overlap) {
+      const match = a.some(w => b.includes(w));
+
+      if (match) {
         g.push(item);
         placed = true;
         break;
@@ -69,28 +68,25 @@ function cluster(items) {
   return groups;
 }
 
-/* ---------------- SIMPLE OPINION LOGIC ---------------- */
-
+/* lightweight sentiment */
 function sentiment(text) {
   const t = text.toLowerCase();
 
   let support = 0, oppose = 0, neutral = 1;
 
-  if (t.includes("good") || t.includes("support") || t.includes("welcome")) support++;
-  if (t.includes("bad") || t.includes("critic") || t.includes("concern")) oppose++;
+  if (t.includes("increase") || t.includes("support") || t.includes("growth")) support++;
+  if (t.includes("critic") || t.includes("concern") || t.includes("fall")) oppose++;
 
   return [support, oppose, neutral];
 }
 
-/* ---------------- RENDER ---------------- */
-
+/* render */
 function render(groups) {
   const feed = document.getElementById("feed");
   feed.innerHTML = "";
 
-  groups.slice(0, 12).forEach((g, i) => {
+  groups.slice(0, 15).forEach((g, i) => {
     const item = g[0];
-
     const s = sentiment(item.text);
 
     const div = document.createElement("div");
@@ -102,9 +98,7 @@ function render(groups) {
 
       <div class="summary">${item.text.slice(0, 140)}...</div>
 
-      <div class="chart-wrap">
-        <canvas id="c${i}" width="80" height="80"></canvas>
-      </div>
+      <canvas id="c${i}" width="70" height="70"></canvas>
 
       <a href="${item.link}" target="_blank">Open source</a>
     `;
@@ -126,13 +120,11 @@ function render(groups) {
     if (i % 3 === 2) {
       const ad = document.createElement("div");
       ad.className = "card";
-      ad.innerHTML = "AD SLOT";
+      ad.innerText = "Ad Space";
       feed.appendChild(ad);
     }
   });
 }
-
-/* ---------------- MAIN ---------------- */
 
 async function load() {
   const data = await fetchAll();
@@ -141,6 +133,4 @@ async function load() {
 }
 
 load();
-
-/* 10 MIN REFRESH */
 setInterval(load, 10 * 60 * 1000);
