@@ -83,3 +83,27 @@ body {
   height: 90px !important;
   display: block;
 }
+
+.card-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.chart-box {
+  width: 90px;
+  height: 90px;
+  flex: 0 0 90px;
+}
+
+.chart-box canvas {
+  width: 90px !important;
+  height: 90px !important;
+  display: block;
+}

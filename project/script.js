@@ -176,3 +176,41 @@ new Chart(canvas, {
     }
   }
 });
+
+div.innerHTML = `
+  <div class="card-inner">
+
+    <div class="text">
+      <div class="title">${item.title}</div>
+      <div class="meta">${item.source}</div>
+
+      <div class="summary">${item.text.slice(0, 140)}</div>
+
+      <a href="${item.link}" target="_blank">Open</a>
+    </div>
+
+    <div class="chart-box">
+      <canvas id="c${i}"></canvas>
+    </div>
+
+  </div>
+`;
+
+const canvas = document.getElementById(`c${i}`);
+canvas.width = 90;
+canvas.height = 90;
+
+new Chart(canvas, {
+  type: "pie",
+  data: {
+    labels: ["Support", "Oppose", "Neutral"],
+    datasets: [{ data: s }]
+  },
+  options: {
+    responsive: false,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    }
+  }
+});
