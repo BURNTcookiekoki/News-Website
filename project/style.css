@@ -71,3 +71,16 @@ body {
   height: 90px;
   margin: 10px 0;
 }
+
+.chart-wrap {
+  width: 90px;
+  height: 90px;
+  margin: 10px 0;
+  position: relative;
+}
+
+.chart-wrap canvas {
+  width: 90px !important;
+  height: 90px !important;
+  display: block;
+}

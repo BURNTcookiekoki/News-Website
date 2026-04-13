@@ -134,3 +134,21 @@ async function load() {
 
 load();
 setInterval(load, 10 * 60 * 1000);
+
+new Chart(document.getElementById(`c${i}`), {
+  type: "pie",
+  data: {
+    labels: ["Support", "Oppose", "Neutral"],
+    datasets: [{
+      data: s
+    }]
+  },
+  options: {
+    responsive: false,
+    plugins: {
+      legend: {
+        display: false
+      }
+    }
+  }
+});
