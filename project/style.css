@@ -65,3 +65,9 @@ body {
   margin: 20px 0;
   color: #777;
 }
+
+.chart-wrap {
+  width: 90px;
+  height: 90px;
+  margin: 10px 0;
+}
