@@ -3,45 +3,52 @@ const FEEDS = [
   "https://www.stuff.co.nz/rss",
   "https://www.nzherald.co.nz/rss/",
   "https://www.1news.co.nz/rss/"
+  "https://www.rnz.co.nz/rss/political.xml"
 ];
 
+/* FETCH RSS XML VIA CORS PROXY */
 async function fetchFeed(url) {
   try {
     const res = await fetch(
-      "https://api.rss2json.com/v1/api.json?rss_url=" +
+      "https://api.allorigins.win/raw?url=" +
       encodeURIComponent(url)
     );
-    const data = await res.json();
-    return data.items || [];
-  } catch {
+
+    const text = await res.text();
+    const xml = new DOMParser().parseFromString(text, "text/xml");
+
+    const items = [...xml.querySelectorAll("item")];
+
+    return items.map(i => ({
+      title: i.querySelector("title")?.textContent || "",
+      link: i.querySelector("link")?.textContent || "",
+      text: (i.querySelector("description")?.textContent || "")
+        .replace(/<[^>]*>/g, ""),
+      source: url.includes("rnz") ? "RNZ"
+            : url.includes("stuff") ? "Stuff"
+            : url.includes("nzherald") ? "NZ Herald"
+            : "1News"
+    }));
+  } catch (e) {
+    console.log("feed failed:", url);
     return [];
   }
 }
 
+/* FETCH ALL SOURCES */
 async function fetchAll() {
   let all = [];
 
   for (const url of FEEDS) {
     const items = await fetchFeed(url);
-
-    for (const i of items) {
-      all.push({
-        title: i.title,
-        link: i.link,
-        source:
-          url.includes("rnz") ? "RNZ" :
-          url.includes("stuff") ? "Stuff" :
-          url.includes("nzherald") ? "NZ Herald" :
-          "1News",
-        text: (i.description || i.content || "").replace(/<[^>]*>/g, "")
-      });
-    }
+    console.log(url, items.length);
+    all.push(...items);
   }
 
   return all;
 }
 
-/* clustering */
+/* CLUSTER BY WORD OVERLAP */
 function cluster(items) {
   const groups = [];
 
@@ -63,18 +70,21 @@ function cluster(items) {
   return groups;
 }
 
-/* sentiment */
+/* SIMPLE SENTIMENT */
 function sentiment(text) {
   const t = text.toLowerCase();
-  let s = 0, o = 0, n = 1;
 
-  if (t.includes("support") || t.includes("rise") || t.includes("growth")) s++;
-  if (t.includes("concern") || t.includes("critic") || t.includes("fall")) o++;
+  let support = 0;
+  let oppose = 0;
+  let neutral = 1;
 
-  return [s, o, n];
+  if (t.includes("support") || t.includes("rise") || t.includes("growth")) support++;
+  if (t.includes("concern") || t.includes("critic") || t.includes("fall")) oppose++;
+
+  return [support, oppose, neutral];
 }
 
-/* render */
+/* RENDER UI */
 function render(groups) {
   const feed = document.getElementById("feed");
   feed.innerHTML = "";
@@ -87,19 +97,15 @@ function render(groups) {
     card.className = "card";
 
     card.innerHTML = `
-      <div class="card-inner">
+      <div class="left">
+        <div class="title">${item.title}</div>
+        <div class="meta">${item.source}</div>
+        <div class="summary">${item.text.slice(0, 140)}</div>
+        <a href="${item.link}" target="_blank">Open</a>
+      </div>
 
-        <div class="text">
-          <div class="title">${item.title}</div>
-          <div class="meta">${item.source}</div>
-          <div class="summary">${item.text.slice(0, 140)}</div>
-          <a href="${item.link}" target="_blank">Open</a>
-        </div>
-
-        <div class="chart-box">
-          <canvas id="c${i}"></canvas>
-        </div>
-
+      <div class="right">
+        <canvas id="c${i}"></canvas>
       </div>
     `;
 
@@ -132,6 +138,7 @@ function render(groups) {
   });
 }
 
+/* MAIN LOOP */
 async function load() {
   const data = await fetchAll();
   const grouped = cluster(data);
@@ -139,4 +146,6 @@ async function load() {
 }
 
 load();
+
+/* 10 MIN AUTO REFRESH */
 setInterval(load, 10 * 60 * 1000);
