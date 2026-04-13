@@ -1,9 +1,11 @@
 
 const FEEDS = [
-  "https://api.rss2json.com/v1/api.json?rss_url=https://www.rnz.co.nz/rss",
+  "https://www.rnz.co.nz/rss/national.xml",
   "https://api.rss2json.com/v1/api.json?rss_url=https://www.stuff.co.nz/rss",
   "https://api.rss2json.com/v1/api.json?rss_url=https://www.nzherald.co.nz/rss/",
   "https://api.rss2json.com/v1/api.json?rss_url=https://www.1news.co.nz/rss/"
+  "https://www.westpac.co.nz/rednews/rss/"
+  
 ];
 
 /* ---------------- FETCH ---------------- */
