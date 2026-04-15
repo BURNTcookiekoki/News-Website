@@ -1,4 +1,4 @@
-const API = "https://spud-small-swizzle.ngrok-free.dev";
+fetch("https://spud-small-swizzle.ngrok-free.dev/news")
 
 async function load() {
   try {
