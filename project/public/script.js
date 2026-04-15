@@ -1,21 +1,31 @@
+const API = "https://spud-small-swizzle.ngrok-free.dev";
+
 async function load() {
-  const res = await fetch("/news");
-  const data = await res.json();
+  try {
+    const res = await fetch(API + "/news");
+    const data = await res.json();
 
-  const feed = document.getElementById("feed");
-  feed.innerHTML = "";
+    const feed = document.getElementById("feed");
+    feed.innerHTML = "";
 
-  data.forEach(item => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <h3>${item.title}</h3>
-      <p>${item.source} | Cluster: ${item.clusterSize}</p>
-      <p>${item.text}</p>
-      <a href="${item.link}" target="_blank">Open</a>
-      <hr/>
-    `;
-    feed.appendChild(div);
-  });
+    data.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "card";
+
+      div.innerHTML = `
+        <div class="title">${item.title}</div>
+        <div class="meta">${item.source || ""}</div>
+        <div class="summary">${item.text || ""}</div>
+        <a href="${item.link}" target="_blank">Open</a>
+      `;
+
+      feed.appendChild(div);
+    });
+
+  } catch (e) {
+    document.getElementById("feed").innerHTML =
+      "<div class='card'>Backend not reachable</div>";
+  }
 }
 
 load();
