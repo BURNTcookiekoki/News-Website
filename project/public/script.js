@@ -4,9 +4,7 @@ async function load() {
   try {
     const res = await fetch(API + "/news");
 
-    if (!res.ok) {
-      throw new Error("HTTP " + res.status);
-    }
+    if (!res.ok) throw new Error("HTTP " + res.status);
 
     const data = await res.json();
 
@@ -28,8 +26,7 @@ async function load() {
     });
 
   } catch (e) {
-    console.error("FETCH ERROR:", e);
-
+    console.error(e);
     document.getElementById("feed").innerHTML =
       "<div class='card'>Backend not reachable</div>";
   }
