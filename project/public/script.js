@@ -1,4 +1,4 @@
-const API = "https://san-diet-lance-tours.trycloudflare.com";
+const API = "https://whose-eagle-drums-town.trycloudflare.com";
 
 async function load() {
   try {
