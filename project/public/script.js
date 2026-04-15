@@ -1,4 +1,4 @@
-const API = "https://spud-small-swizzle.ngrok-free.dev/news";
+const API = "https://san-diet-lance-tours.trycloudflare.com";
 
 async function load() {
   try {
