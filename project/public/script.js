@@ -3,6 +3,9 @@ const API = "https://spud-small-swizzle.ngrok-free.dev";
 async function load() {
   try {
     const res = await fetch(API + "/news");
+
+    if (!res.ok) throw new Error("HTTP " + res.status);
+
     const data = await res.json();
 
     const feed = document.getElementById("feed");
@@ -23,6 +26,7 @@ async function load() {
     });
 
   } catch (e) {
+    console.error(e);
     document.getElementById("feed").innerHTML =
       "<div class='card'>Backend not reachable</div>";
   }
