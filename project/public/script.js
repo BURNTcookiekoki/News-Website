@@ -1,4 +1,4 @@
-const API = "https://morrison-controversy-carbon-msie.trycloudflare.com";
+const API = "https://configuration-kim-arbitrary-contacted.trycloudflare.com";
 
 async function load() {
   try {
