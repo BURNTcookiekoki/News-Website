@@ -23,7 +23,9 @@ async function load() {
             ${item.sources.map(s => `<a href="${s}" target="_blank">Source</a>`).join("")}
           </div>
 
-          <canvas id="pie-${index}"></canvas>
+          <div class="chart">
+            <canvas id="pie-${index}"></canvas>
+          </div>
         </div>
 
         <a href="${item.link}" target="_blank">Main article</a>

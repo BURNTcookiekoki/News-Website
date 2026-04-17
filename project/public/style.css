@@ -14,7 +14,6 @@ body {
 h1 {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #ffffff;
 }
 
 .card {
@@ -23,41 +22,36 @@ h1 {
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
-  transition: 0.2s ease;
-}
-
-.card:hover {
-  border-color: #2f3a4d;
 }
 
 .title {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
+  color: #fff;
   margin-bottom: 8px;
 }
 
 .summary {
-  font-size: 13px;
-  color: #b6c2d1;
+  font-size: 14px;
+  color: #cbd5e1;
   margin-bottom: 12px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr 100px;
   gap: 16px;
+  align-items: center;
 }
 
-canvas {
-  width: 90px !important;
-  height: 90px !important;
-  flex-shrink: 0;
+.chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .links {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -70,7 +64,7 @@ canvas {
 }
 
 .links a:hover {
-  color: #ffffff;
+  color: #fff;
 }
 
 .card > a {
@@ -79,8 +73,4 @@ canvas {
   font-size: 12px;
   color: #4da3ff;
   text-decoration: none;
-}
-
-.card > a:hover {
-  text-decoration: underline;
 }
