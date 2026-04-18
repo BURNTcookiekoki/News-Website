@@ -1,4 +1,4 @@
-const API = "https://configuration-kim-arbitrary-contacted.trycloudflare.com";
+const API = "https://willing-takes-adds-favors.trycloudflare.com";
 
 async function load() {
   try {
