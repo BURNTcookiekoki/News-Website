@@ -3,14 +3,13 @@ const API = "https://willing-takes-adds-favors.trycloudflare.com";
 async function load() {
   try {
     const res = await fetch(API + "/news");
-    if (!res.ok) throw new Error();
+    if (!res.ok) throw new Error("HTTP " + res.status);
 
     const data = await res.json();
-
     const feed = document.getElementById("feed");
     feed.innerHTML = "";
 
-    data.forEach((item, index) => {
+    data.forEach(item => {
       const div = document.createElement("div");
       div.className = "card";
 
@@ -18,50 +17,31 @@ async function load() {
         <div class="title">${item.title}</div>
         <div class="summary">${item.summary}</div>
 
-        <div class="row">
-          <div class="links">
-            ${item.sources.map(s => `<a href="${s}" target="_blank">Source</a>`).join("")}
-          </div>
-
-          <div class="chart">
-            <canvas id="pie-${index}"></canvas>
-          </div>
+        <div class="links">
+          ${item.sources
+            .map(
+              s => `
+                <a href="${s.articleUrl}" target="_blank" rel="noopener noreferrer">
+                  ${s.name}
+                </a>
+              `
+            )
+            .join("")}
         </div>
 
-        <a href="${item.link}" target="_blank">Main article</a>
+        <a class="main-link" href="${item.mainLink}" target="_blank" rel="noopener noreferrer">
+          Main article
+        </a>
       `;
 
       feed.appendChild(div);
-
-      drawPie(document.getElementById(`pie-${index}`), item.pie);
     });
-
-  } catch {
+  } catch (e) {
+    console.error(e);
     document.getElementById("feed").innerHTML =
       "<div class='card'>Backend not reachable</div>";
   }
 }
 
-function drawPie(canvas, data) {
-  const ctx = canvas.getContext("2d");
-
-  const total = data.positive + data.negative || 1;
-  const p = data.positive / total;
-
-  ctx.clearRect(0, 0, 100, 100);
-
-  ctx.beginPath();
-  ctx.moveTo(50, 50);
-  ctx.fillStyle = "#22c55e";
-  ctx.arc(50, 50, 50, 0, p * 2 * Math.PI);
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.moveTo(50, 50);
-  ctx.fillStyle = "#ef4444";
-  ctx.arc(50, 50, 50, p * 2 * Math.PI, 2 * Math.PI);
-  ctx.fill();
-}
-
 load();
-setInterval(load, 600000);
+setInterval(load, 30000);
