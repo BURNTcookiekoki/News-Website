@@ -38,27 +38,15 @@ h1 {
   line-height: 1.6;
 }
 
-.row {
-  display: grid;
-  grid-template-columns: 1fr 100px;
-  gap: 16px;
-  align-items: center;
-}
-
-.chart {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .links {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .links a {
-  font-size: 12px;
+  font-size: 13px;
   color: #8fa3bf;
   text-decoration: none;
 }
@@ -67,9 +55,8 @@ h1 {
   color: #fff;
 }
 
-.card > a {
+.main-link {
   display: inline-block;
-  margin-top: 10px;
   font-size: 12px;
   color: #4da3ff;
   text-decoration: none;
